@@ -15,4 +15,7 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
--dontwarn *;
+
+-dontnote
+-dontwarn
+-ignorewarnings
