@@ -1,15 +1,29 @@
 package com.haru2036.locman.app
 
-import org.scaloid.common._
+import android.app.Activity
+import android.content.Intent
+import android.os.Bundle
+import android.widget.{TextView, Button, LinearLayout}
+import macroid._
+import macroid.FullDsl._
+
 
 /**
   * Created by haru2036 on 2015/12/13.
   */
-class MainActivity extends SActivity {
-  onCreate {
-    contentView = new SLinearLayout {
-      SButton(R.string.app_name, startActivity(SIntent[MapsActivity]))
+class MainActivity extends Activity with Contexts[Activity]{
+    override def onCreate(savedInstanceState: Bundle): Unit ={
+        super.onCreate(savedInstanceState)
+        setContentView{
+            getUi{
+                l[LinearLayout](
+                    w[Button] <~ text("WebSocket") <~ On.click {
+                        startActivity(new Intent(this, classOf[WebSocketActivity]))
+                        Ui(Unit)
+                    }
+                ) <~ vertical
+            }
+        }
     }
-  }
 }
 

@@ -31,6 +31,10 @@
             android:label="@string/title_activity_maps" >
         </activity>
         <activity
+                android:name=".WebSocketActivity"
+                android:label="hogehoge" >
+        </activity>
+        <activity
                 android:name=".MainActivity"
                 android:label="@string/title_activity_maps" >
             <intent-filter>

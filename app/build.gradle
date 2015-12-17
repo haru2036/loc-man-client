@@ -64,11 +64,17 @@ android {
     lintOptions {
         abortOnError false
     }
+
+    packagingOptions {
+        exclude 'rootdoc.txt'
+    }
+
 }
 
 dependencies {
     compile "org.scala-lang:scala-library:2.11.7"
-    compile "org.scaloid:scaloid_2.11:4.0"
+    compile "org.java-websocket:Java-WebSocket:1.3.0"
+    compile "org.macroid:macroid_2.11:2.0.0-M4"
     compile "com.android.support:multidex:1.0.1"
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.google.android.gms:play-services-maps:8.3.0'
