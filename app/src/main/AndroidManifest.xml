@@ -28,7 +28,9 @@
 
         <activity
             android:name=".MapsActivity"
-            android:label="@string/title_activity_maps" >
+            android:label="@string/title_activity_maps"
+            android:theme="@style/MapTheme"
+        >
         </activity>
         <activity
                 android:name=".WebSocketActivity"

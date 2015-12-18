@@ -3,7 +3,7 @@ package com.haru2036.locman.app
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.widget.{TextView, Button, LinearLayout}
+import android.widget.{Button, LinearLayout}
 import macroid._
 import macroid.FullDsl._
 
@@ -19,6 +19,10 @@ class MainActivity extends Activity with Contexts[Activity]{
                 l[LinearLayout](
                     w[Button] <~ text("WebSocket") <~ On.click {
                         startActivity(new Intent(this, classOf[WebSocketActivity]))
+                        Ui(Unit)
+                    },
+                    w[Button] <~ text("Maps") <~ On.click {
+                        startActivity(new Intent(this, classOf[MapsActivity]))
                         Ui(Unit)
                     }
                 ) <~ vertical
