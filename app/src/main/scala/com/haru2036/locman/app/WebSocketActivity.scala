@@ -24,6 +24,7 @@ class WebSocketActivity extends Activity with Contexts[Activity] {
     }
     var wsClient: Option[WebSocket] = None
     type WSMessage = String
+
     override def onCreate(savedInstanceState: Bundle): Unit ={
         super.onCreate(savedInstanceState)
         setContentView(listView)
@@ -31,7 +32,7 @@ class WebSocketActivity extends Activity with Contexts[Activity] {
 
     override def onResume()={
         super.onResume()
-        Future(connect()).start
+        Future(connect(new URI("ws://192.168.1.22:3000/session/ws/1"))).start
     }
 
     override def onPause()={
@@ -43,14 +44,13 @@ class WebSocketActivity extends Activity with Contexts[Activity] {
         super.onStop()
     }
 
-    def connect(): Unit = {
-        //Todo:アドレスを引数から
+
+    def connect(uri: URI): Unit = {
         arrayAdapter.add("connecting to server")
         arrayAdapter.notifyDataSetChanged()
-        val uri = new URI("ws://192.168.1.22:3000/session/ws/1")
         Log.d("hoge", "running websockets...")
         wsClient = Option(wsClient.getOrElse {
-            new WebSocketFactory().createSocket(uri).addListener(new WebSocketListener() {
+            new WebSocketFactory().createSocket(uri).addListener(new WebSocketListener{
                 override def onPongFrame(websocket: WebSocket, frame: WebSocketFrame): Unit = ???
 
                 override def onFrameSent(websocket: WebSocket, frame: WebSocketFrame): Unit = ???

@@ -2,25 +2,28 @@ package com.haru2036.locman.app
 
 import android.os.Bundle
 import android.support.v4.app.FragmentActivity
-import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.{LatLng, MarkerOptions}
+import com.google.android.gms.maps.model.{LatLng}
+import com.haru2036.locman.app.actors.{LocationActor}
+import macroid.{Contexts, IdGeneration}
+import macroid.akka.AkkaActivity
+import macroid.FullDsl._
 
 /**
   * Created by 2036 on 2015/12/18.
   */
-class MapsActivity extends FragmentActivity{
-    lazy val mMap = this.getSupportFragmentManager.findFragmentById(R.id.map).asInstanceOf[SupportMapFragment].getMap
-
-    def initializeMap() : Unit = mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("marker"))
+class MapsActivity extends FragmentActivity with AkkaActivity with IdGeneration with Contexts[FragmentActivity]{
 
     override def onCreate(savedInstanceState: Bundle): Unit = {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_maps)
+        actor1
+        setContentView{
+            getUi{
+                f[MapsFragment].framed(Id.mapsfragment, Tag.map)
+            }
+        }
     }
-
     override def onResume()={
         super.onResume()
-        initializeMap()
     }
 
     override def onPause()={
@@ -29,7 +32,12 @@ class MapsActivity extends FragmentActivity{
 
     override def onStop(): Unit ={
         super.onStop()
+        actorSystem.shutdown()
     }
+
+    override val actorSystemName: String = "locman-map-system"
+
+    lazy val actor1 = actorSystem.actorOf(LocationActor.props, "maps")
 
 
 }
