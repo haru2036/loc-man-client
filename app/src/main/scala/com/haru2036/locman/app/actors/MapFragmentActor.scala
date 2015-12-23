@@ -10,7 +10,7 @@ import macroid.akka.{FragmentActor}
   * Created by 2036 on 2015/12/18.
   */
 object MapFragmentActor {
-    def props = Props(new LocationActor)
+    def props = Props(new MapFragmentActor)
 }
 
 class MapFragmentActor extends FragmentActor[MapsFragment]{
@@ -19,7 +19,8 @@ class MapFragmentActor extends FragmentActor[MapsFragment]{
             val map = fragment.getMap
             map.clear()
             map.addMarker(new MarkerOptions().position(x).title("marker"))
+            Log.d("MapFragmentActor", "message received and maps refreshed")
         })
-        case _ ⇒ Log.d("LocationActor", "message received")
+        case x ⇒ Log.d("MapFragmentActor", "message received:" ++ x.toString)
     }
 }

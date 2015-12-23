@@ -1,9 +1,10 @@
 package com.haru2036.locman.app
 
+import akka.actor.ActorRef
 import android.support.v4.app.Fragment
-import android.view.{View, ViewGroup, LayoutInflater}
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.{MarkerOptions, LatLng}
+import com.haru2036.locman.app.actors.MapFragmentActor
 import macroid.{Contexts, IdGeneration}
 import macroid.akka.AkkaFragment
 
@@ -12,13 +13,12 @@ import macroid.akka.AkkaFragment
   */
 class MapsFragment extends SupportMapFragment with AkkaFragment with IdGeneration with Contexts[Fragment]{
 
-    lazy val actor = Some(actorSystem.actorSelection("/user/actor1"))
-
-    def initializeMap() : Unit = getMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("marker"))
+    lazy val actor = Some(actorSystem.actorSelection("/user/mapActor"))
 
     override def onResume() ={
         super.onResume()
-        initializeMap()
+        assert(actor.isInstanceOf[Option[MapFragmentActor]])
+        actor.get.tell(new LatLng(35.7469045,139.8035575), ActorRef.noSender)
     }
 
 }

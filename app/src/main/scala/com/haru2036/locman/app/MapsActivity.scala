@@ -1,9 +1,10 @@
 package com.haru2036.locman.app
 
+import akka.actor.ActorRef
 import android.os.Bundle
 import android.support.v4.app.FragmentActivity
 import com.google.android.gms.maps.model.{LatLng}
-import com.haru2036.locman.app.actors.{LocationActor}
+import com.haru2036.locman.app.actors.{MapFragmentActor, LocationActor}
 import macroid.{Contexts, IdGeneration}
 import macroid.akka.AkkaActivity
 import macroid.FullDsl._
@@ -15,7 +16,8 @@ class MapsActivity extends FragmentActivity with AkkaActivity with IdGeneration 
 
     override def onCreate(savedInstanceState: Bundle): Unit = {
         super.onCreate(savedInstanceState)
-        actor1
+        mapActor
+        locationActor
         setContentView{
             getUi{
                 f[MapsFragment].framed(Id.mapsfragment, Tag.map)
@@ -37,7 +39,9 @@ class MapsActivity extends FragmentActivity with AkkaActivity with IdGeneration 
 
     override val actorSystemName: String = "locman-map-system"
 
-    lazy val actor1 = actorSystem.actorOf(LocationActor.props, "maps")
+    lazy val mapActor = actorSystem.actorOf(MapFragmentActor.props, "mapActor")
+
+    lazy val locationActor = actorSystem.actorOf(LocationActor.props, "locationActor")
 
 
 }
