@@ -1,9 +1,10 @@
 package com.haru2036.locman.app.actors
 
 import akka.actor.Props
+import android.location.Location
 import android.util.Log
 import com.google.android.gms.maps.model.{MarkerOptions, LatLng}
-import com.haru2036.locman.app.MapsFragment
+import com.haru2036.locman.app.{UsersUpdate, MapsFragment}
 import macroid.Ui
 import macroid.akka.{FragmentActor}
 /**
@@ -19,6 +20,12 @@ class MapFragmentActor extends FragmentActor[MapsFragment]{
             val map = fragment.getMap
             map.clear()
             map.addMarker(new MarkerOptions().position(x).title("marker"))
+            Log.d("MapFragmentActor", "message received and maps refreshed")
+        })
+        case x: Location => withUi(fragment => Ui{
+            val map = fragment.getMap
+            map.clear()
+            map.addMarker(new MarkerOptions().position(new LatLng(x.getLatitude, x.getLongitude)).title("marker"))
             Log.d("MapFragmentActor", "message received and maps refreshed")
         })
         case x ⇒ Log.d("MapFragmentActor", "message received:" ++ x.toString)

@@ -1,9 +1,7 @@
 package com.haru2036.locman.app
 
-import akka.actor.ActorRef
 import android.os.Bundle
 import android.support.v4.app.FragmentActivity
-import com.google.android.gms.maps.model.{LatLng}
 import com.haru2036.locman.app.actors.{MapFragmentActor, LocationActor}
 import macroid.{Contexts, IdGeneration}
 import macroid.akka.AkkaActivity
@@ -41,7 +39,7 @@ class MapsActivity extends FragmentActivity with AkkaActivity with IdGeneration 
 
     lazy val mapActor = actorSystem.actorOf(MapFragmentActor.props, "mapActor")
 
-    lazy val locationActor = actorSystem.actorOf(LocationActor.props, "locationActor")
+    lazy val locationActor = actorSystem.actorOf(LocationActor.props(this, mapActor), "locationActor")
 
 
 }

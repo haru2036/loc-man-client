@@ -33,11 +33,14 @@ class WebSocketActivity extends Activity with Contexts[Activity] {
     override def onResume()={
         super.onResume()
         Future(connect(new URI("ws://192.168.1.22:3000/session/ws/1"))).start
+        wsClient.map(x=>{
+            x.sendText("""{¥"tag¥":¥"Joined¥",¥"contents¥":{¥"uid¥":¥"hoge¥",¥"name¥":¥"hoge¥"}}""")
+        })
     }
 
     override def onPause()={
         super.onPause()
-        wsClient.get.sendClose()
+        wsClient.map(x => x.sendClose())
     }
 
     override def onStop(): Unit ={
