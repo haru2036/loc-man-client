@@ -1,6 +1,6 @@
 package com.haru2036.locman.app.actors
 
-import akka.actor.{PoisonPill, ActorRef, Actor, Props}
+import akka.actor.{ActorRef, Actor, Props}
 import android.content.Context
 import android.location.Location
 import android.os.Bundle
@@ -17,6 +17,8 @@ object LocationActor {
 class LocationActor(cnt : Context, mapActor: ActorRef) extends Actor with ConnectionCallbacks with OnConnectionFailedListener{
     lazy val apiclient = new GoogleApiClient.Builder(cnt).addApi(LocationServices.API).addConnectionCallbacks(this).addOnConnectionFailedListener(this).build()
 
+    lazy val locationListener = new LocationListener {override def onLocationChanged(location: Location): Unit = mapActor ! location}
+
     def receive = {
         case _ ⇒ Log.d("LocationActor", "message received")
     }
@@ -24,18 +26,16 @@ class LocationActor(cnt : Context, mapActor: ActorRef) extends Actor with Connec
     override def preStart(): Unit ={
         GooglePlayServicesUtil.isGooglePlayServicesAvailable(cnt)
         apiclient.connect()
-
     }
+
+    override def postStop() = LocationServices.FusedLocationApi.removeLocationUpdates(apiclient, locationListener)
 
     override def onConnectionSuspended(i: Int): Unit = ???
 
     override def onConnected(bundle: Bundle): Unit = {
-        LocationServices.FusedLocationApi.requestLocationUpdates(apiclient, LocationRequest.create(), new LocationListener {
-            override def onLocationChanged(location: Location): Unit = mapActor ! location
-        })
-        val lastLocation = Option(LocationServices.FusedLocationApi.getLastLocation(
-            apiclient))
-        lastLocation.foreach (mapActor !)
+        val locationRequest = LocationRequest.create().setInterval(1000)
+
+        LocationServices.FusedLocationApi.requestLocationUpdates(apiclient, locationRequest, locationListener)
     }
 
     //if the connection failed, the actor will kill itself
