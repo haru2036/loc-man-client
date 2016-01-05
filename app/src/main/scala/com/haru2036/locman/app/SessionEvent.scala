@@ -31,8 +31,9 @@ object UpdateLocationProtocol extends DefaultJsonProtocol{
 
 
 object EventRootProtocol extends DefaultJsonProtocol{
+    implicit val juserFormat = jsonFormat2(JUser)
+
     implicit object SessionEvent extends RootJsonFormat[SessionEvent] {
-        implicit val juserFormat = jsonFormat2(JUser)
         override def write(obj: SessionEvent): JsValue = obj match {
             case updateLocation: UpdateLocation => JsObject(
                 "tag" -> JsString("UpdateLocation"),
@@ -60,14 +61,15 @@ object EventRootProtocol extends DefaultJsonProtocol{
     }
 }
 
+
 trait SessionEvent
 
-case class Joined(user: JUser) extends SessionEvent with DefaultJsonProtocol
+case class Joined(user: JUser) extends SessionEvent
 
 case class Exited(user: JUser) extends SessionEvent
 
 case class UpdateLocation(error: Double, latitude: Double, longitude: Double, altitude: Double) extends SessionEvent
 
-case class JUser(uid: String, name: String) extends DefaultJsonProtocol//todo:適当なのでなおす
+case class JUser(uid: String, name: String) //todo:適当なのでなおす
 
 

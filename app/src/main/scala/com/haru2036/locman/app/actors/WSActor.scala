@@ -5,6 +5,7 @@ import java.util
 
 import akka.actor.{Actor, ActorRef, Props}
 import akka.event.Logging
+import android.location.Location
 import android.util.Log
 import com.neovisionaries.ws.client._
 import spray.json._
@@ -71,8 +72,11 @@ class WSActor(mapActor: ActorRef, uri: URI) extends Actor {
             })
 
     def receive = {
-        case ev: SessionEvent => wsclient.sendText(ev.toJson.compactPrint)
-        case _ ⇒ Log.d("LocationActor", "message received")
+        case ev: SessionEvent =>
+            val json = ev.toJson.compactPrint
+            log.info("sending to server: " + json)
+            wsclient.sendText(json)
+        case x ⇒ log.info("message : " + x.toString)
     }
 
     override def preStart(): Unit ={

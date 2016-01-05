@@ -9,18 +9,19 @@ import com.google.android.gms.common.{ConnectionResult, GooglePlayServicesUtil}
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.common.api.GoogleApiClient.{OnConnectionFailedListener, ConnectionCallbacks}
 import com.google.android.gms.location.{LocationListener, LocationRequest, LocationServices}
+import com.haru2036.locman.app.UpdateLocation
 
 object LocationActor {
-    def props (cnt: Context, mapActor: ActorRef) = Props(new LocationActor(cnt, mapActor))
+    def props (cnt: Context, recipients: List[ActorRef]) = Props(new LocationActor(cnt, recipients))
 }
 
-class LocationActor(cnt : Context, mapActor: ActorRef) extends Actor with ConnectionCallbacks with OnConnectionFailedListener{
+class LocationActor(cnt : Context, recipients: List[ActorRef]) extends Actor with ConnectionCallbacks with OnConnectionFailedListener{
     lazy val apiclient = new GoogleApiClient.Builder(cnt).addApi(LocationServices.API).addConnectionCallbacks(this).addOnConnectionFailedListener(this).build()
 
-    lazy val locationListener = new LocationListener {override def onLocationChanged(location: Location): Unit = mapActor ! location}
+    lazy val locationListener = new LocationListener {override def onLocationChanged(l: Location): Unit = recipients.foreach(x => x ! new UpdateLocation(l.getAccuracy, l.getLatitude, l.getLongitude, l.getAltitude))}
 
     def receive = {
-        case _ ⇒ Log.d("LocationActor", "message received")
+        case x ⇒ Log.d("LocationActor", "message received" ++ x.toString)
     }
 
     override def preStart(): Unit ={
