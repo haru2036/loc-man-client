@@ -1,8 +1,10 @@
 package com.haru2036.locman.app
 
+import java.net.URI
+
 import android.os.Bundle
 import android.support.v4.app.FragmentActivity
-import com.haru2036.locman.app.actors.{MapFragmentActor, LocationActor}
+import com.haru2036.locman.app.actors.{WSActor, MapFragmentActor, LocationActor}
 import macroid.{Contexts, IdGeneration}
 import macroid.akka.AkkaActivity
 import macroid.FullDsl._
@@ -16,6 +18,7 @@ class MapsActivity extends FragmentActivity with AkkaActivity with IdGeneration 
         super.onCreate(savedInstanceState)
         mapActor
         locationActor
+        wsActor
         setContentView{
             getUi{
                 f[MapsFragment].framed(Id.mapsfragment, Tag.map)
@@ -40,6 +43,8 @@ class MapsActivity extends FragmentActivity with AkkaActivity with IdGeneration 
     lazy val mapActor = actorSystem.actorOf(MapFragmentActor.props, "mapActor")
 
     lazy val locationActor = actorSystem.actorOf(LocationActor.props(this, mapActor), "locationActor")
+
+    lazy val wsActor = actorSystem.actorOf(WSActor.props(mapActor, new URI("ws://192.168.1.22:3000/session/ws/1")), "wsActor")
 
 
 }
