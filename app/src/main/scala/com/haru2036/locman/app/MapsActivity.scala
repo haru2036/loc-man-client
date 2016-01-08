@@ -44,7 +44,7 @@ class MapsActivity extends FragmentActivity with AkkaActivity with IdGeneration 
 
     lazy val locationActor = actorSystem.actorOf(LocationActor.props(this, List(mapActor, wsActor)), "locationActor")
 
-    lazy val wsActor = actorSystem.actorOf(WSActor.props(mapActor, new URI("ws://192.168.1.22:3000/session/ws/1")), "wsActor")
+    lazy val wsActor = actorSystem.actorOf(WSActor.props(mapActor, new URI("ws://192.168.1.22:3000/api/session/ws/1"), "_SESSION=YMZsSHV8xdGAq47g+NWgopIeG2g2htgc7dYDDaHU1mG12PFxjAuRR1EznhaaHoNrpKrrsCrtbgueuVbHZvLYvXscjgXDziH5ms94tSt60grD4oO6JhLYJv/TkjUuOI0GiZBvhrMLaiOW8IBHSAwxI2bLgFBCEjqqUYIkjA=="), "wsActor")
 
 
 }

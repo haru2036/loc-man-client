@@ -5,23 +5,22 @@ import java.util
 
 import akka.actor.{Actor, ActorRef, Props}
 import akka.event.Logging
-import android.location.Location
-import android.util.Log
+import com.haru2036.locman.app.message.{UserSessionEvent, SessionEvent, EventRootProtocol, UserSessionEventProtocol}
 import com.neovisionaries.ws.client._
 import spray.json._
-import com.haru2036.locman.app.{UpdateLocation, SessionEvent}
-import com.haru2036.locman.app.EventRootProtocol._
+import EventRootProtocol._
 
 /**
   * Created by 2036 on 2016/01/03.
   */
 
 object WSActor{
-    def props (mapActor: ActorRef, uri: URI) = Props(new WSActor(mapActor, uri))
+    def props (mapActor: ActorRef, uri: URI, cookie: String) = Props(new WSActor(mapActor, uri, cookie))
 }
 
-class WSActor(mapActor: ActorRef, uri: URI) extends Actor {
+class WSActor(mapActor: ActorRef, uri: URI, cookie: String) extends Actor {
 
+    import UserSessionEventProtocol._
     var log = Logging(context.system, this)
     type WSMessage = String
     lazy val wsclient = new WebSocketFactory().createSocket(uri).addListener(new WebSocketListener{
@@ -43,7 +42,7 @@ class WSActor(mapActor: ActorRef, uri: URI) extends Actor {
 
                 override def onBinaryFrame(websocket: WebSocket, frame: WebSocketFrame): Unit = ???
 
-                override def onTextFrame(websocket: WebSocket, frame: WebSocketFrame): Unit = mapActor ! jsonReader[SessionEvent].read(JsonParser(frame.getPayloadText))
+                override def onTextFrame(websocket: WebSocket, frame: WebSocketFrame): Unit = mapActor ! jsonReader[UserSessionEvent].read(JsonParser(frame.getPayloadText))
 
                 override def onPingFrame(websocket: WebSocket, frame: WebSocketFrame): Unit = ???
 
@@ -69,7 +68,7 @@ class WSActor(mapActor: ActorRef, uri: URI) extends Actor {
 
                 override def onDisconnected(websocket: WebSocket, serverCloseFrame: WebSocketFrame, clientCloseFrame: WebSocketFrame, closedByServer: Boolean): Unit = log.info("ws disconnected")
 
-            })
+            }).addHeader("Cookie", cookie)
 
     def receive = {
         case ev: SessionEvent =>

@@ -9,7 +9,7 @@ import com.google.android.gms.common.{ConnectionResult, GooglePlayServicesUtil}
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.common.api.GoogleApiClient.{OnConnectionFailedListener, ConnectionCallbacks}
 import com.google.android.gms.location.{LocationListener, LocationRequest, LocationServices}
-import com.haru2036.locman.app.UpdateLocation
+import com.haru2036.locman.app.message.UpdateLocation
 
 object LocationActor {
     def props (cnt: Context, recipients: List[ActorRef]) = Props(new LocationActor(cnt, recipients))
@@ -34,7 +34,7 @@ class LocationActor(cnt : Context, recipients: List[ActorRef]) extends Actor wit
     override def onConnectionSuspended(i: Int): Unit = ???
 
     override def onConnected(bundle: Bundle): Unit = {
-        val locationRequest = LocationRequest.create().setInterval(1000)
+        val locationRequest = LocationRequest.create().setInterval(1000).setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
 
         LocationServices.FusedLocationApi.requestLocationUpdates(apiclient, locationRequest, locationListener)
     }
