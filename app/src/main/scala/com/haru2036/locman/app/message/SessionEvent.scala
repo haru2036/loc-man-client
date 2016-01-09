@@ -32,16 +32,16 @@ object UserSessionEventProtocol extends DefaultJsonProtocol{
     import EventRootProtocol._
     import JUserProtocol._
 
-    implicit object UserSessionEventFormat extends JsonFormat[UserSessionEvent] {
-        override def write(obj: UserSessionEvent): JsValue = JsObject(
+    implicit object UserSessionEventFormat extends JsonFormat[UserSessionEvent[SessionEvent]] {
+        override def write(obj: UserSessionEvent[SessionEvent]): JsValue = JsObject(
             "event" -> SessionEvent.write(obj.event),
-            "author" -> juserFormat.write(obj.author)
+            "author" -> jUserFormat.write(obj.author)
         )
 
-        override def read(json: JsValue): UserSessionEvent = {
+        override def read(json: JsValue): UserSessionEvent[SessionEvent] = {
              json.asJsObject.getFields("event", "author") match {
                 case Seq(JsObject(event), JsObject(author)) =>
-                    new UserSessionEvent(SessionEvent.read(event.toJson), juserFormat.read(author.toJson))
+                    new UserSessionEvent(SessionEvent.read(event.toJson), jUserFormat.read(author.toJson))
                 case _ => throw new DeserializationException("ks")
             }
         }
@@ -51,7 +51,20 @@ object UserSessionEventProtocol extends DefaultJsonProtocol{
 
 
 object JUserProtocol extends DefaultJsonProtocol{
-    implicit val juserFormat = jsonFormat2(JUser)
+    implicit object jUserFormat extends JsonFormat[JUser] {
+        override def write(obj: JUser): JsValue = JsObject(
+            "uid" -> JsString(obj.uid),
+            "name" -> JsString(obj.name)
+        )
+
+        override def read(json: JsValue): JUser = {
+            json.asJsObject.getFields("uid", "name") match {
+                case Seq(JsString(uid), JsString(name)) =>
+                    new JUser(uid, name)
+                case _ => throw new DeserializationException("ks")
+            }
+        }
+    }
 }
 
 
@@ -87,7 +100,7 @@ object EventRootProtocol extends DefaultJsonProtocol{
 
 trait SessionEvent
 
-case class UserSessionEvent(event: SessionEvent, author: JUser)
+case class UserSessionEvent[T <: SessionEvent](event: T, author: JUser)
 
 case class Joined() extends SessionEvent
 
