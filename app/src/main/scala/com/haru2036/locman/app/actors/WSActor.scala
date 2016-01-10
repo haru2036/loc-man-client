@@ -42,7 +42,8 @@ class WSActor(mapActor: ActorRef, uri: URI, cookie: String) extends Actor {
 
                 override def onBinaryFrame(websocket: WebSocket, frame: WebSocketFrame): Unit = ???
 
-                override def onTextFrame(websocket: WebSocket, frame: WebSocketFrame): Unit = mapActor ! jsonReader[UserSessionEvent[SessionEvent]].read(JsonParser(frame.getPayloadText))
+                override def onTextFrame(websocket: WebSocket, frame: WebSocketFrame): Unit = {
+                }
 
                 override def onPingFrame(websocket: WebSocket, frame: WebSocketFrame): Unit = ???
 
@@ -60,7 +61,10 @@ class WSActor(mapActor: ActorRef, uri: URI, cookie: String) extends Actor {
 
                 override def onFrameUnsent(websocket: WebSocket, frame: WebSocketFrame): Unit = ???
 
-                override def onTextMessage(websocket: WebSocket, text: WSMessage): Unit = ???
+                override def onTextMessage(websocket: WebSocket, text: WSMessage): Unit = {
+                    mapActor ! jsonReader[UserSessionEvent[SessionEvent]].read(JsonParser(text))
+                    log.debug("received json :", text)
+                }
 
                 override def onBinaryMessage(websocket: WebSocket, binary: Array[Byte]): Unit = ???
 

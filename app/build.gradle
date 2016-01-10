@@ -76,6 +76,7 @@ android {
 
 dependencies {
     compile 'org.scala-lang:scala-library:2.11.7'
+    compile 'org.scala-lang:scala-reflect:2.11.7'
     compile group: 'io.spray', name: 'spray-json_2.10', version: '1.2.5'
     compile 'com.neovisionaries:nv-websocket-client:1.14'
     compile 'org.macroid:macroid-akka_2.11:2.0.0-M4'

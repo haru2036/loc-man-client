@@ -1,6 +1,7 @@
 package com.haru2036.locman.app.message
 
 import spray.json._
+import scala.reflect.ClassTag
 
 
 /**
@@ -41,7 +42,7 @@ object UserSessionEventProtocol extends DefaultJsonProtocol{
         override def read(json: JsValue): UserSessionEvent[SessionEvent] = {
              json.asJsObject.getFields("event", "author") match {
                 case Seq(JsObject(event), JsObject(author)) =>
-                    new UserSessionEvent(SessionEvent.read(event.toJson), jUserFormat.read(author.toJson))
+                    new UserSessionEvent[SessionEvent](SessionEvent.read(event.toJson), jUserFormat.read(author.toJson))
                 case _ => throw new DeserializationException("ks")
             }
         }
@@ -89,9 +90,13 @@ object EventRootProtocol extends DefaultJsonProtocol{
             json.asJsObject.getFields("tag", "contents") match{
                 case Seq(JsString(tag), JsObject(contents)) => tag match{
                     case "UpdateLocation" => UpdateLocationProtocol.UpdateLocation.read(contents.toJson)
-                    case "Joined" => new Joined()
-                    case "Exited" => new Exited()
+                    case _ => throw new DeserializationException("ks")
                 }
+                case Seq(JsString(tag), JsArray(contents)) => tag match {
+                    case "Exited" => Exited()
+                    case "Joined" => Joined()
+                }
+                case _ => throw new DeserializationException("ks")
             }
         }
     }
@@ -100,7 +105,9 @@ object EventRootProtocol extends DefaultJsonProtocol{
 
 trait SessionEvent
 
-case class UserSessionEvent[T <: SessionEvent](event: T, author: JUser)
+case class UserSessionEvent[T <: SessionEvent : ClassTag](event: T, author: JUser){
+    val classTag = implicitly[ClassTag[T]]
+}
 
 case class Joined() extends SessionEvent
 
