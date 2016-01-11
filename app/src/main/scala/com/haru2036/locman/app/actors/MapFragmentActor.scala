@@ -32,6 +32,7 @@ class MapFragmentActor extends FragmentActor[MapsFragment] with ActorLogging {
                 case x: Throwable => log.error(x, "occured at updatelocation")
             }
         })
+            // todo: 型パラメータで分岐したいけど型消去周りの話がこんがらがってうまくいかなかった
         case x: UserSessionEvent[UpdateLocation] if x.event.isInstanceOf[UpdateLocation] =>withUi(fragment=> Ui{
             Log.d("MapFragmentActor", "message received (UserSessionEvent UpdateLocation)")
             implicit val map: GoogleMap = fragment.getMap

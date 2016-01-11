@@ -38,3 +38,16 @@
 -keep class scala.collection.SeqLike {
     public protected *;
 }
+-keepclassmembers class org.persona.login.android.PersonaLoginActiity{
+   public *;
+}
+
+-keepclassmembers class * {
+    @android.webkit.JavascriptInterface <methods>;
+}
+
+-keepattributes JavascriptInterface
+-keep public class org.persona.login.android.BrowserIDInterface
+-keepclassmembers class org.persona.login.android.BrowserIDInterface{
+    <methods>;
+}
