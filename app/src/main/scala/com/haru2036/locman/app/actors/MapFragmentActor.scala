@@ -3,8 +3,8 @@ package com.haru2036.locman.app.actors
 import akka.actor.{Actor, ActorLogging, Props}
 import android.util.Log
 import scala.collection.mutable
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.model.{Marker, BitmapDescriptorFactory, MarkerOptions, LatLng}
+import com.google.android.gms.maps._
+import com.google.android.gms.maps.model._
 import com.haru2036.locman.app.{R, MapsFragment}
 import com.haru2036.locman.app.message._
 import macroid.Ui
@@ -27,6 +27,11 @@ class MapFragmentActor extends FragmentActor[MapsFragment] with ActorLogging {
             try {
                 Log.d("MapFragmentActor", "message received (UpdateLocation)")
                 implicit val map: GoogleMap = fragment.getMap
+                //手抜き
+                if(myselfMarker.isEmpty) {
+                    setCameraToLocation(new LatLng(x.latitude, x.longitude), 19f)
+                }
+
                 myselfMarker = Option(updateMarker(myselfMarker, new UserSessionEvent[UpdateLocation](x, new JUser("", "Myself"))))
             }catch{
                 case x: Throwable => log.error(x, "occured at updatelocation")
@@ -48,7 +53,6 @@ class MapFragmentActor extends FragmentActor[MapsFragment] with ActorLogging {
         case x ⇒ Log.d("MapFragmentActor", "message received:" ++ x.toString)
     }
 
-
     def getOrCreateMarker(marker: Option[Marker], defaultMarkerOptions: Option[MarkerOptions])(implicit map: GoogleMap): Marker =
         marker.getOrElse{map.addMarker(defaultMarkerOptions.getOrElse(new MarkerOptions()))}
 
@@ -63,5 +67,10 @@ class MapFragmentActor extends FragmentActor[MapsFragment] with ActorLogging {
         mk.setPosition(new LatLng(location.event.latitude, location.event.longitude))
         mk
     }
+
+    def setCameraToLocation(target: LatLng, zoom: Float) = withUi(fragment => Ui{
+        fragment.getMap.animateCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition(target, zoom, 0, 0)))
+        }
+    )
 
 }

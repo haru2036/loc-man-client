@@ -25,6 +25,7 @@ public class PersonaLoginActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setResult(RESULT_CANCELED);
         setupWebView();
     }
 

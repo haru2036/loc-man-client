@@ -4,10 +4,12 @@ import java.net.URI
 
 import android.os.Bundle
 import android.support.v4.app.FragmentActivity
-import com.haru2036.locman.app.actors.{WSActor, MapFragmentActor, LocationActor}
-import macroid.{Contexts, IdGeneration}
-import macroid.akka.AkkaActivity
+import android.view.ViewGroup.LayoutParams._
+import android.widget.RelativeLayout
+import com.haru2036.locman.app.actors.{LocationActor, MapFragmentActor, WSActor}
 import macroid.FullDsl._
+import macroid.akka.AkkaActivity
+import macroid.{Contexts, IdGeneration}
 
 /**
   * Created by 2036 on 2015/12/18.
@@ -21,7 +23,9 @@ class MapsActivity extends FragmentActivity with AkkaActivity with IdGeneration 
         wsActor
         setContentView{
             getUi{
-                f[MapsFragment].framed(Id.mapsfragment, Tag.map)
+                l[RelativeLayout] {
+                    f[MapsFragment].framed(Id.mapsfragment, Tag.map) <~ lp[RelativeLayout](MATCH_PARENT, MATCH_PARENT)
+                }
             }
         }
     }
