@@ -5,7 +5,8 @@ import java.util
 
 import akka.actor.{Actor, ActorRef, Props}
 import akka.event.Logging
-import com.haru2036.locman.app.message.{UserSessionEvent, SessionEvent, EventRootProtocol, UserSessionEventProtocol}
+import com.haru2036.locman.app.message.SessionEvent
+import com.haru2036.locman.app.message._
 import com.neovisionaries.ws.client._
 import spray.json._
 import EventRootProtocol._

@@ -24,7 +24,7 @@
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyAKfIXaxyZVUnwy1HB7vdjepj_9UkRqWr8" />
+            android:value="YOUR_GOOGLE_MAPS_KEY" />
 
         <activity
             android:name=".MapsActivity"
@@ -32,14 +32,6 @@
             android:theme="@style/MapTheme"
             android:screenOrientation="portrait"
         >
-        </activity>
-        <activity
-                android:name=".WebSocketActivity"
-                android:label="hogehoge" >
-        </activity>
-        <activity
-                android:name=".MainActivity"
-                android:label="@string/title_activity_maps" >
         </activity>
         <activity
                 android:name="org.persona.login.android.PersonaLoginActivity"

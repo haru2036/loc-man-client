@@ -39,6 +39,10 @@ class MapsActivity extends FragmentActivity with AkkaActivity with IdGeneration 
 
     override def onStop(): Unit ={
         super.onStop()
+    }
+
+    override def onDestroy()= {
+        super.onStop()
         actorSystem.shutdown()
     }
 
