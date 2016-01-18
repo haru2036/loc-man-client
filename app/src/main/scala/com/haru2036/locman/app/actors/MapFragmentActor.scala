@@ -48,7 +48,10 @@ class MapFragmentActor extends FragmentActor[MapsFragment] with ActorLogging {
         case x: UserSessionEvent[Exited] if x.event.isInstanceOf[Exited] =>withUi(fragment=> Ui{
             Log.d("MapFragmentActor", "message received (UserSessionEvent Exited)")
             Log.d("Exited: ", x.toString)
-            markers.find{case (a, b)=> a.uid.equals(x.author.uid)}.foreach{case (a, b) => b.remove()}
+            markers.find{case (a, b)=> a.uid.equals(x.author.uid)}.foreach{case (a, b) =>
+                b.remove()
+                markers.remove(a)
+            }
         })
         case x ⇒ Log.d("MapFragmentActor", "message received:" ++ x.toString)
     }
