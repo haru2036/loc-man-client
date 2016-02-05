@@ -28,7 +28,7 @@ class LoginActivity extends Activity with Contexts[Activity] with IdGeneration{
     }
 
     override def onActivityResult(reqCode: Int, resultCode: Int, i: Intent) = {
-        if(resultCode == Activity.RESULT_OK || reqCode == 1) {
+        if(resultCode == Activity.RESULT_FIRST_USER && reqCode == 1) {
             Future{
                 import com.ning.http.client.AsyncHttpClientConfig
                 import com.ning.http.client.providers.netty.NettyAsyncHttpProvider

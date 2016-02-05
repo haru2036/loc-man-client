@@ -24,7 +24,7 @@ public class BrowserIDInterface {
         Bundle bundle = new Bundle();
         bundle.putString("assertion", assertion);
         i.putExtras(bundle);
-        activity.setResult(Activity.RESULT_OK, i);
+        activity.setResult(Activity.RESULT_FIRST_USER, i);
         activity.finish();
     }
 }
